@@ -5,7 +5,6 @@ import { ScatterPlot } from "@/components/ScatterPlot";
 import { OmnitrixLoader } from "@/components/OmnitrixLoader";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -99,21 +98,43 @@ export const Projection = () => {
             {/* Features */}
             <div className="space-y-2 md:col-span-2">
               <Label className="font-orbitron text-sm">FEATURES</Label>
-              <div className="flex flex-wrap gap-4 pt-1">
+              <div className="flex flex-wrap gap-3 pt-1">
                 {availableFeatures.map((feature) => (
-                  <div key={feature.id} className="flex items-center gap-2">
-                    <Checkbox
-                      id={`proj-${feature.id}`}
-                      checked={selectedFeatures.includes(feature.id)}
-                      onCheckedChange={() => handleFeatureToggle(feature.id)}
-                    />
-                    <label
-                      htmlFor={`proj-${feature.id}`}
-                      className="text-sm text-muted-foreground cursor-pointer"
+                  <label
+                    key={feature.id}
+                    className="flex items-center gap-2 cursor-pointer select-none group"
+                  >
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={selectedFeatures.includes(feature.id)}
+                      onClick={() => handleFeatureToggle(feature.id)}
+                      className={`h-5 w-5 shrink-0 rounded border-2 transition-all flex items-center justify-center ${
+                        selectedFeatures.includes(feature.id)
+                          ? "bg-primary border-primary text-primary-foreground"
+                          : "border-primary/50 bg-card hover:border-primary"
+                      }`}
                     >
+                      {selectedFeatures.includes(feature.id) && (
+                        <svg
+                          className="h-3 w-3"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={3}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      )}
+                    </button>
+                    <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
                       {feature.label}
-                    </label>
-                  </div>
+                    </span>
+                  </label>
                 ))}
               </div>
             </div>
@@ -147,7 +168,7 @@ export const Projection = () => {
             <div className="flex justify-center">
               <ScatterPlot
                 points={reduceMutation.data}
-                width={Math.min(700, window.innerWidth - 80)}
+                width={Math.min(700, typeof window !== 'undefined' ? window.innerWidth - 80 : 700)}
                 height={450}
               />
             </div>
@@ -168,8 +189,8 @@ export const Projection = () => {
           className="mt-8 text-center"
         >
           <p className="text-sm text-muted-foreground">
-            <span className="text-primary font-orbitron">TIP:</span> Hover over points to see alien names.
-            Points are colored by their cluster assignment.
+            <span className="text-primary font-orbitron">TIP:</span> Click on points to pin alien details.
+            Hover over points to preview. Points are colored by cluster.
           </p>
         </motion.div>
       </div>

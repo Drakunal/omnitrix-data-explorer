@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import type { ProjectionPoint } from "@/types/alien";
+import { mockAliens } from "@/data/mockAliens";
 
 interface ScatterPlotProps {
   points: ProjectionPoint[];
@@ -17,6 +18,7 @@ const clusterColors = [
 ];
 
 export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotProps) => {
+  const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
 
   const padding = 40;
@@ -35,6 +37,14 @@ export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotPr
     x: padding + ((point.x - xMin) / (xMax - xMin || 1)) * plotWidth,
     y: padding + ((yMax - point.y) / (yMax - yMin || 1)) * plotHeight,
   });
+
+  const getAlienDetails = (pointId: string) => {
+    return mockAliens.find((a) => a.id === pointId);
+  };
+
+  const activePoint = selectedPoint || hoveredPoint;
+  const activeAlien = activePoint ? getAlienDetails(activePoint) : null;
+  const activePointData = activePoint ? points.find((p) => p.id === activePoint) : null;
 
   return (
     <div className="relative">
@@ -102,13 +112,15 @@ export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotPr
         {points.map((point) => {
           const { x, y } = normalize(point);
           const color = point.cluster !== undefined ? clusterColors[point.cluster % clusterColors.length] : "hsl(var(--primary))";
-          const isHovered = hoveredPoint === point.id;
+          const isActive = activePoint === point.id;
 
           return (
             <motion.g
               key={point.id}
               onMouseEnter={() => setHoveredPoint(point.id)}
               onMouseLeave={() => setHoveredPoint(null)}
+              onClick={() => setSelectedPoint(selectedPoint === point.id ? null : point.id)}
+              style={{ cursor: "pointer" }}
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
@@ -117,50 +129,106 @@ export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotPr
               <motion.circle
                 cx={x}
                 cy={y}
-                r={isHovered ? 20 : 12}
+                r={isActive ? 24 : 14}
                 fill={color}
                 opacity={0.2}
-                animate={{ r: isHovered ? 20 : 12 }}
+                animate={{ r: isActive ? 24 : 14 }}
               />
               
               {/* Main point */}
               <motion.circle
                 cx={x}
                 cy={y}
-                r={8}
+                r={10}
                 fill={color}
                 stroke="hsl(var(--background))"
                 strokeWidth="2"
-                className="cursor-pointer"
-                animate={{ scale: isHovered ? 1.3 : 1 }}
+                animate={{ scale: isActive ? 1.4 : 1 }}
               />
 
-              {/* Label on hover */}
-              {isHovered && (
-                <g>
-                  <rect
-                    x={x + 12}
-                    y={y - 20}
-                    width={point.name.length * 8 + 16}
-                    height={24}
-                    rx="4"
-                    fill="hsl(var(--card))"
-                    stroke={color}
-                    strokeWidth="1"
-                  />
-                  <text
-                    x={x + 20}
-                    y={y - 4}
-                    className="fill-foreground text-xs font-orbitron"
-                  >
-                    {point.name}
-                  </text>
-                </g>
+              {/* Quick name label */}
+              {isActive && (
+                <text
+                  x={x}
+                  y={y - 20}
+                  textAnchor="middle"
+                  className="fill-foreground text-xs font-orbitron font-bold"
+                  style={{ pointerEvents: "none" }}
+                >
+                  {point.name}
+                </text>
               )}
             </motion.g>
           );
         })}
       </svg>
+
+      {/* Detail panel */}
+      <AnimatePresence>
+        {activeAlien && activePointData && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            className="absolute top-4 right-4 w-64 bg-card/95 backdrop-blur-sm border border-primary/30 rounded-lg p-4 shadow-glow"
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <img
+                src={activeAlien.image}
+                alt={activeAlien.name}
+                className="w-12 h-12 rounded-lg object-cover border border-primary/30"
+              />
+              <div>
+                <h4 className="font-orbitron font-bold text-primary">
+                  {activeAlien.name}
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  {activeAlien.species}
+                </p>
+              </div>
+            </div>
+            
+            {/* Stats */}
+            <div className="space-y-2 mb-3">
+              {[
+                { label: "STR", value: activeAlien.strength },
+                { label: "SPD", value: activeAlien.speed },
+                { label: "INT", value: activeAlien.intelligence },
+                { label: "DUR", value: activeAlien.durability },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground w-8">{label}</span>
+                  <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-primary"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${value}%` }}
+                    />
+                  </div>
+                  <span className="text-xs text-foreground w-6 text-right">{value}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Cluster info */}
+            {activePointData.cluster !== undefined && (
+              <div className="flex items-center gap-2 pt-2 border-t border-primary/20">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: clusterColors[activePointData.cluster % clusterColors.length] }}
+                />
+                <span className="text-xs text-muted-foreground">
+                  Cluster {activePointData.cluster + 1}
+                </span>
+              </div>
+            )}
+
+            <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t border-primary/10">
+              Click to pin • Click again to unpin
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Legend */}
       <div className="flex flex-wrap justify-center gap-4 mt-4">

@@ -6,7 +6,6 @@ import { OmnitrixLoader } from "@/components/OmnitrixLoader";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -117,21 +116,43 @@ export const Cluster = () => {
             {/* Features */}
             <div className="space-y-2 md:col-span-2">
               <Label className="font-orbitron text-sm">FEATURES</Label>
-              <div className="flex flex-wrap gap-4 pt-1">
+              <div className="flex flex-wrap gap-3 pt-1">
                 {availableFeatures.map((feature) => (
-                  <div key={feature.id} className="flex items-center gap-2">
-                    <Checkbox
-                      id={feature.id}
-                      checked={selectedFeatures.includes(feature.id)}
-                      onCheckedChange={() => handleFeatureToggle(feature.id)}
-                    />
-                    <label
-                      htmlFor={feature.id}
-                      className="text-sm text-muted-foreground cursor-pointer"
+                  <label
+                    key={feature.id}
+                    className="flex items-center gap-2 cursor-pointer select-none group"
+                  >
+                    <button
+                      type="button"
+                      role="checkbox"
+                      aria-checked={selectedFeatures.includes(feature.id)}
+                      onClick={() => handleFeatureToggle(feature.id)}
+                      className={`h-5 w-5 shrink-0 rounded border-2 transition-all flex items-center justify-center ${
+                        selectedFeatures.includes(feature.id)
+                          ? "bg-primary border-primary text-primary-foreground"
+                          : "border-primary/50 bg-card hover:border-primary"
+                      }`}
                     >
+                      {selectedFeatures.includes(feature.id) && (
+                        <svg
+                          className="h-3 w-3"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={3}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      )}
+                    </button>
+                    <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
                       {feature.label}
-                    </label>
-                  </div>
+                    </span>
+                  </label>
                 ))}
               </div>
             </div>
@@ -142,6 +163,7 @@ export const Cluster = () => {
               variant="omnitrix"
               onClick={runClustering}
               disabled={selectedFeatures.length < 2 || clusterMutation.isPending}
+              type="button"
             >
               <Layers className="w-4 h-4 mr-2" />
               Run Clustering
