@@ -4,12 +4,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { OmnitrixLoader } from "@/components/OmnitrixLoader";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Database, Brain, Layers } from "lucide-react";
+import { useOmnitrixSound } from "@/hooks/useOmnitrixSound";
+import omnitrixSymbol from "@/assets/omnitrix-symbol.png";
 
 export const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { playInitSound } = useOmnitrixSound();
 
   useEffect(() => {
+    // Play sound when loader starts
+    playInitSound();
+    
     const timer = setTimeout(() => setIsLoading(false), 2500);
     return () => clearTimeout(timer);
   }, []);
@@ -53,23 +59,37 @@ export const Home = () => {
             transition={{ duration: 0.6 }}
             className="text-center max-w-4xl mx-auto"
           >
+            {/* Omnitrix Symbol */}
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+              className="mb-6"
+            >
+              <div className="relative inline-block">
+                <motion.img
+                  src={omnitrixSymbol}
+                  alt="Omnitrix Symbol"
+                  className="w-32 h-32 sm:w-40 sm:h-40 mx-auto drop-shadow-[0_0_30px_hsl(var(--primary)/0.8)]"
+                  animate={{
+                    filter: [
+                      "drop-shadow(0 0 20px hsl(var(--primary) / 0.5))",
+                      "drop-shadow(0 0 40px hsl(var(--primary) / 0.8))",
+                      "drop-shadow(0 0 20px hsl(var(--primary) / 0.5))",
+                    ],
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </div>
+            </motion.div>
+
             {/* Main title */}
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
               className="mb-8"
             >
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <motion.div
-                  className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center border-2 border-primary shadow-glow"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                >
-                  <div className="w-6 h-6 bg-primary rounded-sm rotate-45" />
-                </motion.div>
-              </div>
-              
               <h1 className="text-4xl sm:text-6xl md:text-7xl font-orbitron font-black text-primary text-glow mb-4 tracking-wider">
                 OMNITRIX
               </h1>
@@ -82,7 +102,7 @@ export const Home = () => {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.4 }}
               className="text-muted-foreground text-lg sm:text-xl max-w-2xl mx-auto mb-12"
             >
               Explore the hidden structure of the Ben 10 alien universe through
@@ -93,7 +113,7 @@ export const Home = () => {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.6 }}
               className="mb-16"
             >
               <Button
@@ -111,7 +131,7 @@ export const Home = () => {
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
+              transition={{ delay: 0.8 }}
               className="grid grid-cols-1 md:grid-cols-3 gap-6"
             >
               {features.map((feature, index) => (
@@ -119,7 +139,7 @@ export const Home = () => {
                   key={feature.title}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 + index * 0.1 }}
+                  transition={{ delay: 0.9 + index * 0.1 }}
                   className="holo-card p-6 text-left"
                 >
                   <feature.icon className="w-10 h-10 text-primary mb-4" />
