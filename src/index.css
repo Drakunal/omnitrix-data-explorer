@@ -2,95 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import "@fontsource/orbitron/400.css";
+@import "@fontsource/orbitron/700.css";
+@import "@fontsource/orbitron/900.css";
 
+/* Omnitrix Data Lab Design System */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Core Omnitrix Colors */
+    --background: 220 20% 4%;
+    --foreground: 120 100% 85%;
+    
+    /* Card surfaces with glass effect */
+    --card: 220 25% 8%;
+    --card-foreground: 120 60% 90%;
+    
+    --popover: 220 25% 6%;
+    --popover-foreground: 120 60% 90%;
+    
+    /* Omnitrix neon green */
+    --primary: 120 100% 50%;
+    --primary-foreground: 220 20% 4%;
+    
+    /* Secondary teal accent */
+    --secondary: 180 100% 35%;
+    --secondary-foreground: 180 100% 95%;
+    
+    /* Muted surfaces */
+    --muted: 220 20% 12%;
+    --muted-foreground: 220 15% 55%;
+    
+    /* Accent cyan glow */
+    --accent: 175 100% 45%;
+    --accent-foreground: 175 100% 95%;
+    
+    /* Error/destructive */
+    --destructive: 0 85% 55%;
+    --destructive-foreground: 0 0% 100%;
+    
+    /* Borders and inputs */
+    --border: 120 50% 20%;
+    --input: 220 20% 15%;
+    --ring: 120 100% 50%;
+    
+    --radius: 0.75rem;
+    
+    /* Cluster colors for grouping */
+    --cluster-1: 120 100% 50%;
+    --cluster-2: 280 100% 60%;
+    --cluster-3: 45 100% 55%;
+    --cluster-4: 190 100% 50%;
+    --cluster-5: 340 100% 60%;
+    
+    /* Glow effects */
+    --glow-primary: 0 0 20px hsl(120 100% 50% / 0.5), 0 0 40px hsl(120 100% 50% / 0.3);
+    --glow-accent: 0 0 20px hsl(175 100% 45% / 0.5), 0 0 40px hsl(175 100% 45% / 0.3);
+    --glow-intense: 0 0 30px hsl(120 100% 50% / 0.7), 0 0 60px hsl(120 100% 50% / 0.4), 0 0 90px hsl(120 100% 50% / 0.2);
+    
+    /* Sidebar */
+    --sidebar-background: 220 25% 6%;
+    --sidebar-foreground: 120 60% 85%;
+    --sidebar-primary: 120 100% 50%;
+    --sidebar-primary-foreground: 220 20% 4%;
+    --sidebar-accent: 175 100% 45%;
+    --sidebar-accent-foreground: 175 100% 95%;
+    --sidebar-border: 120 50% 20%;
+    --sidebar-ring: 120 100% 50%;
   }
 }
 
@@ -98,8 +75,196 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-family: system-ui, -apple-system, sans-serif;
+    background-image: 
+      radial-gradient(ellipse at 50% 0%, hsl(120 100% 50% / 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, hsl(175 100% 45% / 0.02) 0%, transparent 40%);
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Orbitron', sans-serif;
+    @apply tracking-wider;
+  }
+}
+
+@layer components {
+  /* Omnitrix loader animation */
+  .omnitrix-loader {
+    @apply relative w-32 h-32;
+  }
+  
+  .omnitrix-loader::before {
+    content: '';
+    @apply absolute inset-0 rounded-full border-4 border-primary/30;
+    animation: omnitrix-pulse 2s ease-in-out infinite;
+  }
+  
+  .omnitrix-loader::after {
+    content: '';
+    @apply absolute inset-2 rounded-full border-2 border-primary;
+    animation: omnitrix-spin 3s linear infinite;
+    border-top-color: transparent;
+    border-right-color: transparent;
+  }
+  
+  /* Holographic card effect */
+  .holo-card {
+    @apply relative bg-card/60 backdrop-blur-xl border border-primary/20 rounded-xl overflow-hidden;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--card)) 0%,
+      hsl(220 25% 10%) 50%,
+      hsl(var(--card)) 100%
+    );
+  }
+  
+  .holo-card::before {
+    content: '';
+    @apply absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary) / 0.1) 0%,
+      transparent 50%,
+      hsl(var(--accent) / 0.1) 100%
+    );
+  }
+  
+  .holo-card:hover::before {
+    @apply opacity-100;
+  }
+  
+  .holo-card:hover {
+    box-shadow: var(--glow-primary);
+  }
+  
+  /* Scan line effect */
+  .scan-lines {
+    @apply pointer-events-none fixed inset-0 z-50;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      hsl(120 100% 50% / 0.01) 2px,
+      hsl(120 100% 50% / 0.01) 4px
+    );
+  }
+  
+  /* Glowing text */
+  .text-glow {
+    text-shadow: 0 0 10px hsl(var(--primary) / 0.8), 0 0 20px hsl(var(--primary) / 0.5), 0 0 40px hsl(var(--primary) / 0.3);
+  }
+  
+  .text-glow-accent {
+    text-shadow: 0 0 10px hsl(var(--accent) / 0.8), 0 0 20px hsl(var(--accent) / 0.5);
+  }
+  
+  /* Hexagon pattern background */
+  .hex-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%2339ff14' fill-opacity='0.03'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  
+  /* Pulse animation for cards */
+  .pulse-border {
+    @apply relative;
+  }
+  
+  .pulse-border::after {
+    content: '';
+    @apply absolute -inset-px rounded-xl opacity-0;
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--primary)));
+    animation: border-pulse 3s ease-in-out infinite;
+    z-index: -1;
+  }
+  
+  /* Nav link underline */
+  .nav-link {
+    @apply relative;
+  }
+  
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+  }
+  
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    @apply w-full;
+    box-shadow: var(--glow-primary);
+  }
+  
+  /* Cluster glow colors */
+  .cluster-0 { --cluster-color: var(--cluster-1); }
+  .cluster-1 { --cluster-color: var(--cluster-2); }
+  .cluster-2 { --cluster-color: var(--cluster-3); }
+  .cluster-3 { --cluster-color: var(--cluster-4); }
+  .cluster-4 { --cluster-color: var(--cluster-5); }
+  
+  .cluster-glow {
+    box-shadow: 0 0 20px hsl(var(--cluster-color) / 0.5), 0 0 40px hsl(var(--cluster-color) / 0.3);
+    border-color: hsl(var(--cluster-color));
+  }
+}
+
+@layer utilities {
+  .font-orbitron {
+    font-family: 'Orbitron', sans-serif;
+  }
+}
+
+/* Keyframe animations */
+@keyframes omnitrix-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+@keyframes omnitrix-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes border-pulse {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    filter: brightness(1);
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  50% {
+    filter: brightness(1.2);
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.6);
   }
 }
