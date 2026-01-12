@@ -99,43 +99,43 @@ export const Projection = () => {
             <div className="space-y-2 md:col-span-2">
               <Label className="font-orbitron text-sm">FEATURES</Label>
               <div className="flex flex-wrap gap-3 pt-1">
-                {availableFeatures.map((feature) => (
-                  <label
-                    key={feature.id}
-                    className="flex items-center gap-2 cursor-pointer select-none group"
-                  >
-                    <button
-                      type="button"
-                      role="checkbox"
-                      aria-checked={selectedFeatures.includes(feature.id)}
+                {availableFeatures.map((feature) => {
+                  const isSelected = selectedFeatures.includes(feature.id);
+                  return (
+                    <div
+                      key={feature.id}
                       onClick={() => handleFeatureToggle(feature.id)}
-                      className={`h-5 w-5 shrink-0 rounded border-2 transition-all flex items-center justify-center ${
-                        selectedFeatures.includes(feature.id)
-                          ? "bg-primary border-primary text-primary-foreground"
-                          : "border-primary/50 bg-card hover:border-primary"
-                      }`}
+                      className="flex items-center gap-2 cursor-pointer select-none group"
                     >
-                      {selectedFeatures.includes(feature.id) && (
-                        <svg
-                          className="h-3 w-3"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                          strokeWidth={3}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
-                    </button>
-                    <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
-                      {feature.label}
-                    </span>
-                  </label>
-                ))}
+                      <div
+                        className={`h-5 w-5 shrink-0 rounded border-2 transition-all flex items-center justify-center ${
+                          isSelected
+                            ? "bg-primary border-primary text-primary-foreground"
+                            : "border-primary/50 bg-card hover:border-primary"
+                        }`}
+                      >
+                        {isSelected && (
+                          <svg
+                            className="h-3 w-3"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={3}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                        {feature.label}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

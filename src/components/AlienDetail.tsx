@@ -26,10 +26,10 @@ export const AlienDetail = ({ alien, onClose }: AlienDetailProps) => {
 
       {/* Modal */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="fixed inset-4 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-3xl md:max-h-[90vh] bg-card border border-primary/30 rounded-xl overflow-auto z-50 shadow-glow"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-3xl max-h-[90vh] bg-card border border-primary/30 rounded-xl overflow-auto z-[60] shadow-glow"
       >
         {/* Header */}
         <div className="sticky top-0 bg-card/95 backdrop-blur-sm border-b border-primary/20 p-4 flex items-center justify-between">
