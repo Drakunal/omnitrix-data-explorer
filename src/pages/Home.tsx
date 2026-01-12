@@ -72,13 +72,17 @@ export const Home = () => {
                   alt="Omnitrix Symbol"
                   className="w-32 h-32 sm:w-40 sm:h-40 mx-auto drop-shadow-[0_0_30px_hsl(var(--primary)/0.8)]"
                   animate={{
+                    rotate: 360,
                     filter: [
                       "drop-shadow(0 0 20px hsl(var(--primary) / 0.5))",
                       "drop-shadow(0 0 40px hsl(var(--primary) / 0.8))",
                       "drop-shadow(0 0 20px hsl(var(--primary) / 0.5))",
                     ],
                   }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                    filter: { duration: 2, repeat: Infinity, ease: "easeInOut" },
+                  }}
                 />
               </div>
             </motion.div>
