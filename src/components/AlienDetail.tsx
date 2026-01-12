@@ -14,14 +14,14 @@ export const AlienDetail = ({ alien, onClose }: AlienDetailProps) => {
   const navigate = useNavigate();
 
   return (
-    <>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Backdrop */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={onClose}
-        className="fixed inset-0 bg-background/90 backdrop-blur-sm z-50"
+        className="absolute inset-0 bg-background/90 backdrop-blur-sm"
       />
 
       {/* Modal */}
@@ -29,7 +29,7 @@ export const AlienDetail = ({ alien, onClose }: AlienDetailProps) => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-3xl max-h-[90vh] bg-card border border-primary/30 rounded-xl overflow-auto z-[60] shadow-glow"
+        className="relative w-full max-w-3xl max-h-[90vh] bg-card border border-primary/30 rounded-xl overflow-auto shadow-glow"
       >
         {/* Header */}
         <div className="sticky top-0 bg-card/95 backdrop-blur-sm border-b border-primary/20 p-4 flex items-center justify-between">
@@ -138,6 +138,6 @@ export const AlienDetail = ({ alien, onClose }: AlienDetailProps) => {
           </Button>
         </div>
       </motion.div>
-    </>
+    </div>
   );
 };

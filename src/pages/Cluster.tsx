@@ -120,16 +120,21 @@ export const Cluster = () => {
                 {availableFeatures.map((feature) => {
                   const isSelected = selectedFeatures.includes(feature.id);
                   return (
-                    <div
+                    <button
                       key={feature.id}
-                      onClick={() => handleFeatureToggle(feature.id)}
-                      className="flex items-center gap-2 cursor-pointer select-none group"
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleFeatureToggle(feature.id);
+                      }}
+                      className="flex items-center gap-2 cursor-pointer select-none group bg-transparent border-none p-0"
                     >
                       <div
-                        className={`h-5 w-5 shrink-0 rounded border-2 transition-all flex items-center justify-center ${
+                        className={`h-5 w-5 shrink-0 rounded border-2 transition-all flex items-center justify-center pointer-events-none ${
                           isSelected
                             ? "bg-primary border-primary text-primary-foreground"
-                            : "border-primary/50 bg-card hover:border-primary"
+                            : "border-primary/50 bg-card group-hover:border-primary"
                         }`}
                       >
                         {isSelected && (
@@ -148,10 +153,10 @@ export const Cluster = () => {
                           </svg>
                         )}
                       </div>
-                      <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                      <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors pointer-events-none">
                         {feature.label}
                       </span>
-                    </div>
+                    </button>
                   );
                 })}
               </div>
