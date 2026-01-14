@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import type { Alien, ClusterResult, ProjectionPoint, SimilarityResult } from "@/types/alien";
 import { mockAliens, getAlienById } from "@/data/mockAliens";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 // Helper to check if API is available, otherwise use mock data
 const fetchWithFallback = async <T>(

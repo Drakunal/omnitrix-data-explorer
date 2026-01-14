@@ -32,7 +32,7 @@ const clusterColors = [
   "hsl(var(--cluster-5))",
 ];
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = import.meta.env.VITE_API_BASE;
 
 export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotProps) => {
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
