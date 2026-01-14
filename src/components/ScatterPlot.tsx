@@ -195,6 +195,8 @@ export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotPr
                 { label: "SPD", value: activeAlien.speed },
                 { label: "INT", value: activeAlien.intelligence },
                 { label: "DUR", value: activeAlien.durability },
+                { label: "PWR", value: activeAlien.power },
+                { label: "CMB", value: activeAlien.combat },
               ].map(({ label, value }) => (
                 <div key={label} className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground w-8">{label}</span>

@@ -94,6 +94,8 @@ export const AlienDetail = ({ alien, onClose }: AlienDetailProps) => {
                 { label: "Speed", value: alien.speed },
                 { label: "Intelligence", value: alien.intelligence },
                 { label: "Durability", value: alien.durability },
+                { label: "Power", value: alien.power },
+                { label: "Combat", value: alien.combat },
               ].map(({ label, value }) => (
                 <div key={label}>
                   <div className="flex justify-between text-sm mb-1">

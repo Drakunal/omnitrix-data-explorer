@@ -12,8 +12,8 @@ export const RadarChart = ({ alien, size = 250 }: RadarChartProps) => {
     { key: "speed", label: "SPD", value: alien.speed },
     { key: "intelligence", label: "INT", value: alien.intelligence },
     { key: "durability", label: "DUR", value: alien.durability },
-    { key: "energy", label: "NRG", value: alien.energy ?? 50 },
-    { key: "agility", label: "AGI", value: alien.agility ?? 50 },
+    { key: "power", label: "PWR", value: alien.power },
+    { key: "combat", label: "CMB", value: alien.combat },
   ];
 
   const center = size / 2;

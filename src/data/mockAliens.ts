@@ -19,8 +19,8 @@ export const mockAliens: Alien[] = [
     speed: 70,
     intelligence: 40,
     durability: 85,
-    energy: 60,
-    agility: 75,
+    power: 75,
+    combat: 98,
   },
   {
     id: "2",
@@ -31,8 +31,8 @@ export const mockAliens: Alien[] = [
     speed: 95,
     intelligence: 65,
     durability: 50,
-    energy: 85,
-    agility: 90,
+    power: 85,
+    combat: 60,
   },
   {
     id: "3",
@@ -43,8 +43,8 @@ export const mockAliens: Alien[] = [
     speed: 45,
     intelligence: 90,
     durability: 70,
-    energy: 40,
-    agility: 85,
+    power: 65,
+    combat: 75,
   },
   {
     id: "4",
@@ -55,8 +55,8 @@ export const mockAliens: Alien[] = [
     speed: 98,
     intelligence: 60,
     durability: 55,
-    energy: 70,
-    agility: 95,
+    power: 50,
+    combat: 70,
   },
   {
     id: "5",
@@ -67,8 +67,8 @@ export const mockAliens: Alien[] = [
     speed: 80,
     intelligence: 70,
     durability: 75,
-    energy: 65,
-    agility: 85,
+    power: 80,
+    combat: 85,
   },
   {
     id: "6",
@@ -79,8 +79,8 @@ export const mockAliens: Alien[] = [
     speed: 65,
     intelligence: 55,
     durability: 90,
-    energy: 75,
-    agility: 60,
+    power: 75,
+    combat: 80,
   },
   {
     id: "7",
@@ -91,8 +91,8 @@ export const mockAliens: Alien[] = [
     speed: 75,
     intelligence: 85,
     durability: 45,
-    energy: 90,
-    agility: 80,
+    power: 90,
+    combat: 65,
   },
   {
     id: "8",
@@ -103,8 +103,8 @@ export const mockAliens: Alien[] = [
     speed: 90,
     intelligence: 50,
     durability: 80,
-    energy: 55,
-    agility: 88,
+    power: 70,
+    combat: 88,
   },
 ];
 

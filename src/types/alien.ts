@@ -7,8 +7,8 @@ export interface Alien {
   speed: number;
   intelligence: number;
   durability: number;
-  energy?: number;
-  agility?: number;
+  power: number;
+  combat: number;
 }
 
 export interface SimilarityResult {

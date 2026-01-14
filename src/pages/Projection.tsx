@@ -19,6 +19,8 @@ const availableFeatures = [
   { id: "speed", label: "Speed" },
   { id: "intelligence", label: "Intelligence" },
   { id: "durability", label: "Durability" },
+  { id: "power", label: "Power" },
+  { id: "combat", label: "Combat" },
 ];
 
 export const Projection = () => {
@@ -28,6 +30,8 @@ export const Projection = () => {
     "speed",
     "intelligence",
     "durability",
+    "power",
+    "combat",
   ]);
 
   const reduceMutation = useReduce();

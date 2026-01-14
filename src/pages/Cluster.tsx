@@ -20,6 +20,8 @@ const availableFeatures = [
   { id: "speed", label: "Speed" },
   { id: "intelligence", label: "Intelligence" },
   { id: "durability", label: "Durability" },
+  { id: "power", label: "Power" },
+  { id: "combat", label: "Combat" },
 ];
 
 export const Cluster = () => {
@@ -30,6 +32,8 @@ export const Cluster = () => {
     "speed",
     "intelligence",
     "durability",
+    "power",
+    "combat",
   ]);
 
   const clusterMutation = useCluster();
