@@ -1,7 +1,22 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { ProjectionPoint } from "@/types/alien";
-import { mockAliens } from "@/data/mockAliens";
+
+interface AlienDetailResponse {
+  id: string;
+  name: string;
+  original_name: string;
+  image_url: string;
+  stats: {
+    intelligence: number;
+    strength: number;
+    speed: number;
+    durability: number;
+    power: number;
+    combat: number;
+  };
+  super_powers: string[];
+}
 
 interface ScatterPlotProps {
   points: ProjectionPoint[];
@@ -17,9 +32,13 @@ const clusterColors = [
   "hsl(var(--cluster-5))",
 ];
 
+const API_BASE = "http://localhost:8000";
+
 export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotProps) => {
   const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<string | null>(null);
+  const [alienDetail, setAlienDetail] = useState<AlienDetailResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const padding = 40;
   const plotWidth = width - padding * 2;
@@ -38,13 +57,35 @@ export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotPr
     y: padding + ((yMax - point.y) / (yMax - yMin || 1)) * plotHeight,
   });
 
-  const getAlienDetails = (pointId: string) => {
-    return mockAliens.find((a) => a.id === pointId);
+  const handlePointClick = async (pointId: string) => {
+    if (selectedPoint === pointId) {
+      setSelectedPoint(null);
+      setAlienDetail(null);
+      return;
+    }
+
+    setSelectedPoint(pointId);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE}/aliens/${pointId}`, {
+        headers: { Accept: "application/json" },
+      });
+
+      if (!response.ok) throw new Error(`API Error: ${response.status}`);
+
+      const data: AlienDetailResponse = await response.json();
+      console.log(`✅ [API] Alien detail received:`, data);
+      setAlienDetail(data);
+    } catch (error) {
+      console.warn(`⚠️ [API] Failed to fetch alien detail:`, error);
+      setAlienDetail(null);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const activePoint = selectedPoint || hoveredPoint;
-  const activeAlien = activePoint ? getAlienDetails(activePoint) : null;
-  const activePointData = activePoint ? points.find((p) => p.id === activePoint) : null;
+  const activePointData = selectedPoint ? points.find((p) => p.id === selectedPoint) : null;
 
   return (
     <div className="relative">
@@ -112,14 +153,14 @@ export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotPr
         {points.map((point) => {
           const { x, y } = normalize(point);
           const color = point.cluster !== undefined ? clusterColors[point.cluster % clusterColors.length] : "hsl(var(--primary))";
-          const isActive = activePoint === point.id;
+          const isActive = selectedPoint === point.id || hoveredPoint === point.id;
 
           return (
             <motion.g
               key={point.id}
               onMouseEnter={() => setHoveredPoint(point.id)}
               onMouseLeave={() => setHoveredPoint(null)}
-              onClick={() => setSelectedPoint(selectedPoint === point.id ? null : point.id)}
+              onClick={() => handlePointClick(point.id)}
               style={{ cursor: "pointer" }}
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -146,8 +187,8 @@ export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotPr
                 animate={{ scale: isActive ? 1.4 : 1 }}
               />
 
-              {/* Quick name label */}
-              {isActive && (
+              {/* Quick name label on hover */}
+              {hoveredPoint === point.id && (
                 <text
                   x={x}
                   y={y - 20}
@@ -165,69 +206,103 @@ export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotPr
 
       {/* Detail panel */}
       <AnimatePresence>
-        {activeAlien && activePointData && (
+        {selectedPoint && (
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="absolute top-4 right-4 w-64 bg-card/95 backdrop-blur-sm border border-primary/30 rounded-lg p-4 shadow-glow"
+            className="absolute top-4 right-4 w-72 bg-card/95 backdrop-blur-sm border border-primary/30 rounded-lg p-4 shadow-glow max-h-[400px] overflow-y-auto"
           >
-            <div className="flex items-center gap-3 mb-3">
-              <img
-                src={activeAlien.image}
-                alt={activeAlien.name}
-                className="w-12 h-12 rounded-lg object-cover border border-primary/30"
-              />
-              <div>
-                <h4 className="font-orbitron font-bold text-primary">
-                  {activeAlien.name}
-                </h4>
-                <p className="text-xs text-muted-foreground">
-                  {activeAlien.species}
-                </p>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
-            </div>
-            
-            {/* Stats */}
-            <div className="space-y-2 mb-3">
-              {[
-                { label: "STR", value: activeAlien.strength },
-                { label: "SPD", value: activeAlien.speed },
-                { label: "INT", value: activeAlien.intelligence },
-                { label: "DUR", value: activeAlien.durability },
-                { label: "PWR", value: activeAlien.power },
-                { label: "CMB", value: activeAlien.combat },
-              ].map(({ label, value }) => (
-                <div key={label} className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground w-8">{label}</span>
-                  <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-                    <motion.div
-                      className="h-full bg-primary"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${value}%` }}
-                    />
+            ) : alienDetail ? (
+              <>
+                <div className="flex items-center gap-3 mb-3">
+                  <img
+                    src={alienDetail.image_url}
+                    alt={alienDetail.name}
+                    className="w-14 h-14 rounded-lg object-cover border border-primary/30"
+                  />
+                  <div>
+                    <h4 className="font-orbitron font-bold text-primary">
+                      {alienDetail.name}
+                    </h4>
+                    <p className="text-xs text-muted-foreground">
+                      {alienDetail.original_name}
+                    </p>
                   </div>
-                  <span className="text-xs text-foreground w-6 text-right">{value}</span>
                 </div>
-              ))}
-            </div>
+                
+                {/* Stats */}
+                <div className="space-y-2 mb-3">
+                  {[
+                    { label: "STR", value: alienDetail.stats.strength },
+                    { label: "SPD", value: alienDetail.stats.speed },
+                    { label: "INT", value: alienDetail.stats.intelligence },
+                    { label: "DUR", value: alienDetail.stats.durability },
+                    { label: "PWR", value: alienDetail.stats.power },
+                    { label: "CMB", value: alienDetail.stats.combat },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground w-8">{label}</span>
+                      <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-primary"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${value}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-foreground w-6 text-right">{value}</span>
+                    </div>
+                  ))}
+                </div>
 
-            {/* Cluster info */}
-            {activePointData.cluster !== undefined && (
-              <div className="flex items-center gap-2 pt-2 border-t border-primary/20">
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: clusterColors[activePointData.cluster % clusterColors.length] }}
-                />
-                <span className="text-xs text-muted-foreground">
-                  Cluster {activePointData.cluster + 1}
-                </span>
-              </div>
+                {/* Super Powers */}
+                {alienDetail.super_powers.length > 0 && (
+                  <div className="pt-2 border-t border-primary/20">
+                    <p className="text-xs text-muted-foreground font-orbitron mb-2">POWERS</p>
+                    <div className="flex flex-wrap gap-1">
+                      {alienDetail.super_powers.slice(0, 8).map((power) => (
+                        <span
+                          key={power}
+                          className="text-[10px] px-1.5 py-0.5 bg-primary/20 text-primary rounded"
+                        >
+                          {power}
+                        </span>
+                      ))}
+                      {alienDetail.super_powers.length > 8 && (
+                        <span className="text-[10px] px-1.5 py-0.5 text-muted-foreground">
+                          +{alienDetail.super_powers.length - 8} more
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Cluster info */}
+                {activePointData?.cluster !== undefined && (
+                  <div className="flex items-center gap-2 pt-2 mt-2 border-t border-primary/20">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: clusterColors[activePointData.cluster % clusterColors.length] }}
+                    />
+                    <span className="text-xs text-muted-foreground">
+                      Cluster {activePointData.cluster + 1}
+                    </span>
+                  </div>
+                )}
+
+                <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t border-primary/10">
+                  Click point again to close
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                Failed to load alien data
+              </p>
             )}
-
-            <p className="text-[10px] text-muted-foreground mt-2 pt-2 border-t border-primary/10">
-              Click to pin • Click again to unpin
-            </p>
           </motion.div>
         )}
       </AnimatePresence>
