@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { OmnitrixLoader } from "@/components/OmnitrixLoader";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Database, Brain, Layers, Volume2, VolumeX } from "lucide-react";
-import { useOmnitrixSound } from "@/hooks/useOmnitrixSound";
 import omnitrixSymbol from "@/assets/omnitrix-symbol.png";
 import omnitrixTheme from "@/assets/audio/omnitrix-theme.m4a";
 
@@ -12,7 +11,6 @@ export const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const navigate = useNavigate();
-  const { playInitSound } = useOmnitrixSound();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -20,9 +18,14 @@ export const Home = () => {
     audioRef.current = new Audio(omnitrixTheme);
     audioRef.current.loop = true;
     audioRef.current.volume = 0.3;
-
-    // Play sound when loader starts
-    playInitSound();
+    
+    // Auto-play music on load
+    audioRef.current.play().then(() => {
+      setIsMusicPlaying(true);
+    }).catch(() => {
+      // Browser may block autoplay - user can click to play
+      setIsMusicPlaying(false);
+    });
     
     const timer = setTimeout(() => setIsLoading(false), 2500);
     
