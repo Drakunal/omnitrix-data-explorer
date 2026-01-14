@@ -5,7 +5,7 @@ import { OmnitrixLoader } from "@/components/OmnitrixLoader";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, Database, Brain, Layers } from "lucide-react";
 import omnitrixSymbol from "@/assets/omnitrix-symbol.png";
-import omnitrixTheme from "@/assets/audio/omnitrix-theme.m4a";
+import omnitrixInit from "@/assets/audio/omnitrix-init.mp3";
 
 export const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -14,22 +14,13 @@ export const Home = () => {
 
   useEffect(() => {
     // Create audio element for background music during loading
-    audioRef.current = new Audio(omnitrixTheme);
+    audioRef.current = new Audio(omnitrixInit);
     audioRef.current.volume = 0.3;
     
     // Auto-play music on load
-    audioRef.current.play().catch(() => {
-      // Browser may block autoplay
-    });
+    audioRef.current.play().catch(() => {});
     
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-      // Stop music when loading ends
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
-    }, 2500);
+    const timer = setTimeout(() => setIsLoading(false), 2500);
     
     return () => {
       clearTimeout(timer);
