@@ -110,7 +110,7 @@ export const useSimilarity = (alienId: string, metric: string = "cosine") => {
       console.log(`🔄 [API] Fetching similarity for: ${alienId} with metric: ${metric}`);
       
       try {
-        const response = await fetch(`${API_BASE}/similarity/${alienId}?metric=${metric}`, {
+        const response = await fetch(`${API_BASE}/similarity/?alien_id=${alienId}&metric=${metric}&top_k=3`, {
           headers: { "Content-Type": "application/json" },
         });
         
