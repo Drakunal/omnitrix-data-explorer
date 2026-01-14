@@ -249,7 +249,13 @@ export const useCluster = () => {
   });
 };
 
-// Dimensionality reduction
+// Dimensionality reduction - API response type
+interface ProjectionApiResponse {
+  method: string;
+  features: string[];
+  points: ProjectionPoint[];
+}
+
 interface ReduceParams {
   method: "pca" | "umap";
   features: string[];
@@ -257,23 +263,37 @@ interface ReduceParams {
 
 export const useReduce = () => {
   return useMutation({
-    mutationFn: (params: ReduceParams) =>
-      fetchWithFallback<ProjectionPoint[]>(
-        `${API_BASE}/reduce`,
-        {
-          method: "POST",
-          body: JSON.stringify(params),
-        },
-        () => {
-          // Mock 2D projection with some variation
-          return mockAliens.map((alien, index) => ({
-            id: alien.id,
-            name: alien.name,
-            x: Math.cos((index / mockAliens.length) * Math.PI * 2) * 0.8 + Math.random() * 0.2 - 0.1,
-            y: Math.sin((index / mockAliens.length) * Math.PI * 2) * 0.8 + Math.random() * 0.2 - 0.1,
-            cluster: index % 3,
-          }));
+    mutationFn: async (params: ReduceParams): Promise<ProjectionPoint[]> => {
+      const featuresParam = params.features.join(",");
+      const url = `${API_BASE}/projection/2d?features=${encodeURIComponent(featuresParam)}`;
+      
+      console.log(`🔄 [API] Fetching 2D projection: ${url}`);
+      
+      try {
+        const response = await fetch(url, {
+          headers: { "Accept": "application/json" },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status}`);
         }
-      ),
+        
+        const data: ProjectionApiResponse = await response.json();
+        console.log(`✅ [API] Projection data received:`, data);
+        
+        return data.points;
+      } catch (error) {
+        console.warn(`⚠️ [API] Projection fetch failed, using mock`, error);
+        
+        // Mock 2D projection with some variation
+        return mockAliens.map((alien, index) => ({
+          id: alien.id,
+          display_name: alien.name,
+          x: Math.cos((index / mockAliens.length) * Math.PI * 2) * 80 + Math.random() * 20 - 10,
+          y: Math.sin((index / mockAliens.length) * Math.PI * 2) * 80 + Math.random() * 20 - 10,
+          cluster: index % 3,
+        }));
+      }
+    },
   });
 };

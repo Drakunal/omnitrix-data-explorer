@@ -155,7 +155,7 @@ export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotPr
                   className="fill-foreground text-xs font-orbitron font-bold"
                   style={{ pointerEvents: "none" }}
                 >
-                  {point.name}
+                  {point.display_name}
                 </text>
               )}
             </motion.g>
