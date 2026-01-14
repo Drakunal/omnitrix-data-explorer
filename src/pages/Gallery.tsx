@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAliens } from "@/hooks/useAliens";
 import { AlienCard } from "@/components/AlienCard";
@@ -6,9 +6,39 @@ import { AlienDetail } from "@/components/AlienDetail";
 import { OmnitrixLoader } from "@/components/OmnitrixLoader";
 import type { Alien } from "@/types/alien";
 
+const BATCH_SIZE = 12;
+
 export const Gallery = () => {
   const { data: aliens, isLoading, error } = useAliens();
   const [selectedAlien, setSelectedAlien] = useState<Alien | null>(null);
+  const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
+  const loaderRef = useRef<HTMLDivElement>(null);
+
+  const visibleAliens = aliens?.slice(0, visibleCount) || [];
+  const hasMore = aliens && visibleCount < aliens.length;
+
+  const loadMore = useCallback(() => {
+    if (hasMore) {
+      setVisibleCount((prev) => Math.min(prev + BATCH_SIZE, aliens?.length || prev));
+    }
+  }, [hasMore, aliens?.length]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasMore, loadMore]);
 
   if (isLoading) {
     return (
@@ -48,6 +78,11 @@ export const Gallery = () => {
           <p className="text-muted-foreground max-w-xl mx-auto">
             Select an alien to view detailed analysis and explore similarities
           </p>
+          {aliens && (
+            <p className="text-muted-foreground/60 text-sm mt-2">
+              Showing {visibleAliens.length} of {aliens.length} aliens
+            </p>
+          )}
         </motion.div>
 
         {/* Grid */}
@@ -57,12 +92,12 @@ export const Gallery = () => {
           transition={{ delay: 0.2 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
         >
-          {aliens?.map((alien, index) => (
+          {visibleAliens.map((alien, index) => (
             <motion.div
               key={alien.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+              transition={{ delay: (index % BATCH_SIZE) * 0.05 }}
             >
               <AlienCard
                 alien={alien}
@@ -71,6 +106,20 @@ export const Gallery = () => {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Infinite scroll loader */}
+        {hasMore && (
+          <div
+            ref={loaderRef}
+            className="flex justify-center items-center py-8 mt-4"
+          >
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+              <span className="font-orbitron text-sm">Loading more aliens...</span>
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" style={{ animationDelay: "0.2s" }} />
+            </div>
+          </div>
+        )}
 
         {/* Detail Modal */}
         <AnimatePresence>
