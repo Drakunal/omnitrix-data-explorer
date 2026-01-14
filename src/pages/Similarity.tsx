@@ -34,8 +34,8 @@ export const Similarity = () => {
   }, [initialAlienId]);
 
   const selectedAlien = aliens?.find((a) => a.id === selectedAlienId);
-  const topSimilar = similarityResults?.slice(0, 3) || [];
-  const mostDissimilar = similarityResults?.slice(-1)[0];
+  const topSimilar = similarityResults?.similar || [];
+  const mostDissimilar = similarityResults?.opposite;
 
   if (aliensLoading) {
     return (
@@ -154,7 +154,7 @@ export const Similarity = () => {
                 </motion.div>
 
                 {/* Most Dissimilar */}
-                {(showOpposite || mostDissimilar) && mostDissimilar && (
+                {mostDissimilar && (
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

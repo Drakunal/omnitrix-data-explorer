@@ -67,37 +67,100 @@ export const useAlien = (id: string) => {
   });
 };
 
+// API response types for similarity
+interface SimilarityApiItem {
+  id: string;
+  display_name: string;
+  original_name: string;
+  image_url: string;
+  score: number;
+}
+
+interface SimilarityApiResponse {
+  query: string;
+  metric: string;
+  similar: SimilarityApiItem[];
+  opposite: SimilarityApiItem;
+}
+
+// Transform API item to our Alien type (partial, will be fetched on click)
+const mapApiItemToAlien = (item: SimilarityApiItem): Alien => ({
+  id: item.id,
+  name: item.display_name,
+  image: item.image_url || "",
+  species: item.original_name,
+  strength: 0,
+  speed: 0,
+  intelligence: 0,
+  durability: 0,
+  power: 0,
+  combat: 0,
+});
+
+export interface SimilarityData {
+  similar: SimilarityResult[];
+  opposite: SimilarityResult | null;
+}
+
 // Similarity search
 export const useSimilarity = (alienId: string, metric: string = "cosine") => {
   return useQuery({
     queryKey: ["similarity", alienId, metric],
-    queryFn: () =>
-      fetchWithFallback<SimilarityResult[]>(
-        `${API_BASE}/similarity/${alienId}?metric=${metric}`,
-        undefined,
-        () => {
-          // Mock similarity calculation
-          const sourceAlien = getAlienById(alienId);
-          if (!sourceAlien) return [];
-          
-          return mockAliens
-            .filter((a) => a.id !== alienId)
-            .map((alien) => {
-              // Simple Euclidean distance based similarity
-              const features = ["strength", "speed", "intelligence", "durability"] as const;
-              const distance = Math.sqrt(
-                features.reduce((sum, f) => {
-                  const diff = (sourceAlien[f] ?? 0) - (alien[f] ?? 0);
-                  return sum + diff * diff;
-                }, 0)
-              );
-              // Convert distance to similarity (0-1)
-              const similarity = Math.max(0, 1 - distance / 200);
-              return { alien, similarity };
-            })
-            .sort((a, b) => b.similarity - a.similarity);
+    queryFn: async (): Promise<SimilarityData> => {
+      console.log(`🔄 [API] Fetching similarity for: ${alienId} with metric: ${metric}`);
+      
+      try {
+        const response = await fetch(`${API_BASE}/similarity/${alienId}?metric=${metric}`, {
+          headers: { "Content-Type": "application/json" },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status}`);
         }
-      ),
+        
+        const data: SimilarityApiResponse = await response.json();
+        console.log(`✅ [API] Similarity data received:`, data);
+        
+        // Transform API response to our format
+        const similar: SimilarityResult[] = data.similar.map((item) => ({
+          alien: mapApiItemToAlien(item),
+          similarity: item.score,
+        }));
+        
+        const opposite: SimilarityResult | null = data.opposite ? {
+          alien: mapApiItemToAlien(data.opposite),
+          similarity: data.opposite.score,
+        } : null;
+        
+        return { similar, opposite };
+      } catch (error) {
+        console.warn(`⚠️ [API] Similarity fetch failed, using mock`, error);
+        
+        // Mock fallback
+        const sourceAlien = getAlienById(alienId);
+        if (!sourceAlien) return { similar: [], opposite: null };
+        
+        const results = mockAliens
+          .filter((a) => a.id !== alienId)
+          .map((alien) => {
+            const features = ["strength", "speed", "intelligence", "durability"] as const;
+            const distance = Math.sqrt(
+              features.reduce((sum, f) => {
+                const diff = (sourceAlien[f] ?? 0) - (alien[f] ?? 0);
+                return sum + diff * diff;
+              }, 0)
+            );
+            const similarity = Math.max(0, 1 - distance / 200);
+            return { alien, similarity };
+          })
+          .sort((a, b) => b.similarity - a.similarity);
+        
+        return {
+          similar: results.slice(0, 3),
+          opposite: results[results.length - 1] || null,
+        };
+      }
+    },
     enabled: !!alienId,
   });
 };
