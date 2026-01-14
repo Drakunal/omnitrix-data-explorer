@@ -43,12 +43,51 @@ const fetchWithFallback = async <T>(
   }
 };
 
+// API response type for aliens
+interface AlienApiResponse {
+  id: string;
+  name: string;
+  original_name: string;
+  image_url: string;
+  strength: number;
+  speed: number;
+  intelligence: number;
+  durability: number;
+  power: number;
+  combat: number;
+}
+
+// Transform API alien to our Alien type
+const mapApiAlienToAlien = (apiAlien: AlienApiResponse): Alien => ({
+  id: apiAlien.id,
+  name: apiAlien.name,
+  image: apiAlien.image_url,
+  species: apiAlien.original_name,
+  strength: apiAlien.strength,
+  speed: apiAlien.speed,
+  intelligence: apiAlien.intelligence,
+  durability: apiAlien.durability,
+  power: apiAlien.power,
+  combat: apiAlien.combat,
+});
+
 // Fetch all aliens
 export const useAliens = () => {
   return useQuery({
     queryKey: ["aliens"],
-    queryFn: () =>
-      fetchWithFallback<Alien[]>(`${API_BASE}/aliens`, undefined, () => mockAliens),
+    queryFn: async () => {
+      try {
+        const response = await fetch(`${API_BASE}/aliens`, {
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+        const data: AlienApiResponse[] = await response.json();
+        return data.map(mapApiAlienToAlien);
+      } catch (error) {
+        console.warn(`⚠️ [API] Failed to fetch aliens, using mock`, error);
+        return mockAliens;
+      }
+    },
     staleTime: 5 * 60 * 1000,
   });
 };
@@ -57,12 +96,21 @@ export const useAliens = () => {
 export const useAlien = (id: string) => {
   return useQuery({
     queryKey: ["alien", id],
-    queryFn: () =>
-      fetchWithFallback<Alien>(`${API_BASE}/aliens/${id}`, undefined, () => {
+    queryFn: async () => {
+      try {
+        const response = await fetch(`${API_BASE}/aliens/${id}`, {
+          headers: { "Content-Type": "application/json" },
+        });
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
+        const data: AlienApiResponse = await response.json();
+        return mapApiAlienToAlien(data);
+      } catch (error) {
+        console.warn(`⚠️ [API] Failed to fetch alien, using mock`, error);
         const alien = getAlienById(id);
         if (!alien) throw new Error("Alien not found");
         return alien;
-      }),
+      }
+    },
     enabled: !!id,
   });
 };
