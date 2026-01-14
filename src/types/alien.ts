@@ -23,7 +23,7 @@ export interface ClusterResult {
 
 export interface ProjectionPoint {
   id: string;
-  name: string;
+  display_name: string;
   x: number;
   y: number;
   cluster?: number;
