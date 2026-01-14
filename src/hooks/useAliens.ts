@@ -10,7 +10,7 @@ const fetchWithFallback = async <T>(
   options?: RequestInit,
   fallback?: () => T
 ): Promise<T> => {
-  console.log(`🔄 [API] Attempting to fetch: ${url}`);
+  // console.log(`[API] Attempting to fetch: ${url}`);
   
   try {
     const response = await fetch(url, {
@@ -27,15 +27,15 @@ const fetchWithFallback = async <T>(
     }
     
     const data = await response.json();
-    console.log(`✅ [API] Success! Data received from: ${url}`, data);
+    // console.log(`✅ [API] Success! Data received from: ${url}`, data);
     return data;
   } catch (error) {
     console.warn(`⚠️ [API] Failed to fetch from: ${url}`, error);
     
     if (fallback) {
-      console.log(`📦 [MOCK] Using mock data as fallback`);
+      // console.log(`📦 [MOCK] Using mock data as fallback`);
       const mockData = fallback();
-      console.log(`📦 [MOCK] Mock data:`, mockData);
+      // console.log(`📦 [MOCK] Mock data:`, mockData);
       return mockData;
     }
     
@@ -155,7 +155,7 @@ export const useSimilarity = (alienId: string, metric: string = "cosine") => {
   return useQuery({
     queryKey: ["similarity", alienId, metric],
     queryFn: async (): Promise<SimilarityData> => {
-      console.log(`🔄 [API] Fetching similarity for: ${alienId} with metric: ${metric}`);
+      // console.log(`🔄 [API] Fetching similarity for: ${alienId} with metric: ${metric}`);
       
       try {
         const response = await fetch(`${API_BASE}/similarity/?alien_id=${alienId}&metric=${metric}&top_k=3`, {
@@ -167,7 +167,7 @@ export const useSimilarity = (alienId: string, metric: string = "cosine") => {
         }
         
         const data: SimilarityApiResponse = await response.json();
-        console.log(`✅ [API] Similarity data received:`, data);
+        // console.log(`✅ [API] Similarity data received:`, data);
         
         // Transform API response to our format
         const similar: SimilarityResult[] = data.similar.map((item) => ({
@@ -267,7 +267,7 @@ export const useReduce = () => {
       const featuresParam = params.features.join(",");
       const url = `${API_BASE}/projection/2d?features=${encodeURIComponent(featuresParam)}`;
       
-      console.log(`🔄 [API] Fetching 2D projection: ${url}`);
+      // console.log(`🔄 [API] Fetching 2D projection: ${url}`);
       
       try {
         const response = await fetch(url, {
@@ -279,7 +279,7 @@ export const useReduce = () => {
         }
         
         const data: ProjectionApiResponse = await response.json();
-        console.log(`✅ [API] Projection data received:`, data);
+        // console.log(`✅ [API] Projection data received:`, data);
         
         return data.points;
       } catch (error) {

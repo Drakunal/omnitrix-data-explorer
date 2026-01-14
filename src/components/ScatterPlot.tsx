@@ -75,7 +75,7 @@ export const ScatterPlot = ({ points, width = 600, height = 400 }: ScatterPlotPr
       if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
       const data: AlienDetailResponse = await response.json();
-      console.log(`✅ [API] Alien detail received:`, data);
+      // console.log(`✅ [API] Alien detail received:`, data);
       setAlienDetail(data);
     } catch (error) {
       console.warn(`⚠️ [API] Failed to fetch alien detail:`, error);

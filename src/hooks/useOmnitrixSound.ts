@@ -74,7 +74,7 @@ export const useOmnitrixSound = () => {
       }, 300);
       
     } catch (error) {
-      console.log("Audio not supported:", error);
+      // console.log("Audio not supported:", error);
     }
   };
 
