@@ -3,31 +3,33 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { OmnitrixLoader } from "@/components/OmnitrixLoader";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Database, Brain, Layers, Volume2, VolumeX } from "lucide-react";
+import { ChevronRight, Database, Brain, Layers } from "lucide-react";
 import omnitrixSymbol from "@/assets/omnitrix-symbol.png";
 import omnitrixTheme from "@/assets/audio/omnitrix-theme.m4a";
 
 export const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const navigate = useNavigate();
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Create audio element for background music
+    // Create audio element for background music during loading
     audioRef.current = new Audio(omnitrixTheme);
-    audioRef.current.loop = true;
     audioRef.current.volume = 0.3;
     
     // Auto-play music on load
-    audioRef.current.play().then(() => {
-      setIsMusicPlaying(true);
-    }).catch(() => {
-      // Browser may block autoplay - user can click to play
-      setIsMusicPlaying(false);
+    audioRef.current.play().catch(() => {
+      // Browser may block autoplay
     });
     
-    const timer = setTimeout(() => setIsLoading(false), 2500);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      // Stop music when loading ends
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    }, 2500);
     
     return () => {
       clearTimeout(timer);
@@ -37,17 +39,6 @@ export const Home = () => {
       }
     };
   }, []);
-
-  const toggleMusic = () => {
-    if (audioRef.current) {
-      if (isMusicPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsMusicPlaying(!isMusicPlaying);
-    }
-  };
 
   const features = [
     {
@@ -69,21 +60,6 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 hex-pattern relative">
-      {/* Music toggle button */}
-      <motion.button
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 1, duration: 0.3 }}
-        onClick={toggleMusic}
-        className="fixed top-24 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm border border-primary/30 hover:border-primary/60 transition-all duration-300 hover:scale-110 group"
-        title={isMusicPlaying ? "Pause music" : "Play music"}
-      >
-        {isMusicPlaying ? (
-          <Volume2 className="w-5 h-5 text-primary animate-pulse" />
-        ) : (
-          <VolumeX className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
-        )}
-      </motion.button>
       <AnimatePresence mode="wait">
         {isLoading ? (
           <motion.div
