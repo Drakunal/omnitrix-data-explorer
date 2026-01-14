@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Home, Grid3X3, Search, Layers, ScatterChart } from "lucide-react";
+import omnitrixSymbol from "@/assets/omnitrix-symbol.png";
 
 const navItems = [
   { path: "/", label: "Home", icon: Home },
@@ -19,13 +20,13 @@ export const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3">
-            <motion.div
-              className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center border border-primary/50"
+            <motion.img
+              src={omnitrixSymbol}
+              alt="Omnitrix"
+              className="w-8 h-8 drop-shadow-[0_0_8px_hsl(var(--primary)/0.6)]"
               whileHover={{ scale: 1.1, rotate: 180 }}
               transition={{ duration: 0.3 }}
-            >
-              <div className="w-3 h-3 bg-primary rounded-sm rotate-45" />
-            </motion.div>
+            />
             <span className="font-orbitron font-bold text-primary text-glow hidden sm:block">
               OMNITRIX LAB
             </span>
