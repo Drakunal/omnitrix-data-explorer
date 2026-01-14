@@ -10,6 +10,8 @@ const fetchWithFallback = async <T>(
   options?: RequestInit,
   fallback?: () => T
 ): Promise<T> => {
+  console.log(`🔄 [API] Attempting to fetch: ${url}`);
+  
   try {
     const response = await fetch(url, {
       ...options,
@@ -18,11 +20,25 @@ const fetchWithFallback = async <T>(
         ...options?.headers,
       },
     });
-    if (!response.ok) throw new Error("API Error");
-    return response.json();
+    
+    if (!response.ok) {
+      console.error(`❌ [API] Request failed with status: ${response.status}`);
+      throw new Error(`API Error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log(`✅ [API] Success! Data received from: ${url}`, data);
+    return data;
   } catch (error) {
-    console.log("API unavailable, using mock data");
-    if (fallback) return fallback();
+    console.warn(`⚠️ [API] Failed to fetch from: ${url}`, error);
+    
+    if (fallback) {
+      console.log(`📦 [MOCK] Using mock data as fallback`);
+      const mockData = fallback();
+      console.log(`📦 [MOCK] Mock data:`, mockData);
+      return mockData;
+    }
+    
     throw error;
   }
 };
