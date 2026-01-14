@@ -1,24 +1,50 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { OmnitrixLoader } from "@/components/OmnitrixLoader";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Database, Brain, Layers } from "lucide-react";
+import { ChevronRight, Database, Brain, Layers, Volume2, VolumeX } from "lucide-react";
 import { useOmnitrixSound } from "@/hooks/useOmnitrixSound";
 import omnitrixSymbol from "@/assets/omnitrix-symbol.png";
+import omnitrixTheme from "@/assets/audio/omnitrix-theme.m4a";
 
 export const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const navigate = useNavigate();
   const { playInitSound } = useOmnitrixSound();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    // Create audio element for background music
+    audioRef.current = new Audio(omnitrixTheme);
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0.3;
+
     // Play sound when loader starts
     playInitSound();
     
     const timer = setTimeout(() => setIsLoading(false), 2500);
-    return () => clearTimeout(timer);
+    
+    return () => {
+      clearTimeout(timer);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
   }, []);
+
+  const toggleMusic = () => {
+    if (audioRef.current) {
+      if (isMusicPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsMusicPlaying(!isMusicPlaying);
+    }
+  };
 
   const features = [
     {
@@ -39,7 +65,22 @@ export const Home = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 hex-pattern">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 hex-pattern relative">
+      {/* Music toggle button */}
+      <motion.button
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 1, duration: 0.3 }}
+        onClick={toggleMusic}
+        className="fixed top-24 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm border border-primary/30 hover:border-primary/60 transition-all duration-300 hover:scale-110 group"
+        title={isMusicPlaying ? "Pause music" : "Play music"}
+      >
+        {isMusicPlaying ? (
+          <Volume2 className="w-5 h-5 text-primary animate-pulse" />
+        ) : (
+          <VolumeX className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+        )}
+      </motion.button>
       <AnimatePresence mode="wait">
         {isLoading ? (
           <motion.div
