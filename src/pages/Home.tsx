@@ -64,7 +64,7 @@ export const Home = () => {
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
-              className="mb-6"
+              className="mb-6 mt-16"
             >
               <div className="relative inline-block">
                 <motion.img
