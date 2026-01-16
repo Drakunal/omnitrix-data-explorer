@@ -13,6 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ScatterChart } from "lucide-react";
+import type { ProjectionPoint } from "@/types/alien";
+
+const CACHE_KEY = "projection_cache";
 
 const availableFeatures = [
   { id: "strength", label: "Strength" },
@@ -33,8 +36,29 @@ export const Projection = () => {
     "power",
     "combat",
   ]);
+  const [cachedData, setCachedData] = useState<ProjectionPoint[] | null>(null);
 
   const reduceMutation = useReduce();
+
+  // Load cached data on mount
+  useEffect(() => {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      try {
+        setCachedData(JSON.parse(cached));
+      } catch (e) {
+        localStorage.removeItem(CACHE_KEY);
+      }
+    }
+  }, []);
+
+  // Save to cache when new data arrives
+  useEffect(() => {
+    if (reduceMutation.data) {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(reduceMutation.data));
+      setCachedData(reduceMutation.data);
+    }
+  }, [reduceMutation.data]);
 
   const handleFeatureToggle = (featureId: string) => {
     setSelectedFeatures((prev) =>
@@ -52,10 +76,7 @@ export const Projection = () => {
     });
   };
 
-  // Run initial projection
-  useEffect(() => {
-    runProjection();
-  }, []);
+  const displayData = reduceMutation.data || cachedData;
 
   return (
     <div className="min-h-screen pt-20 pb-12 px-4">
@@ -173,10 +194,10 @@ export const Projection = () => {
             <div className="flex justify-center py-12">
               <OmnitrixLoader />
             </div>
-          ) : reduceMutation.data ? (
+          ) : displayData ? (
             <div className="flex justify-center">
               <ScatterPlot
-                points={reduceMutation.data}
+                points={displayData}
                 width={Math.min(700, typeof window !== 'undefined' ? window.innerWidth - 80 : 700)}
                 height={450}
               />
