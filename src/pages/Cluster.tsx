@@ -14,6 +14,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Layers } from "lucide-react";
+import type { ClusterResult } from "@/types/alien";
+
+const CACHE_KEY = "cluster_cache";
 
 const availableFeatures = [
   { id: "strength", label: "Strength" },
@@ -35,8 +38,29 @@ export const Cluster = () => {
     "power",
     "combat",
   ]);
+  const [cachedData, setCachedData] = useState<ClusterResult[] | null>(null);
 
   const clusterMutation = useCluster();
+
+  // Load cached data on mount
+  useEffect(() => {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      try {
+        setCachedData(JSON.parse(cached));
+      } catch (e) {
+        localStorage.removeItem(CACHE_KEY);
+      }
+    }
+  }, []);
+
+  // Save to cache when new data arrives
+  useEffect(() => {
+    if (clusterMutation.data) {
+      localStorage.setItem(CACHE_KEY, JSON.stringify(clusterMutation.data));
+      setCachedData(clusterMutation.data);
+    }
+  }, [clusterMutation.data]);
 
   const handleFeatureToggle = (featureId: string) => {
     setSelectedFeatures((prev) =>
@@ -55,10 +79,7 @@ export const Cluster = () => {
     });
   };
 
-  // Run initial clustering
-  useEffect(() => {
-    runClustering();
-  }, []);
+  const displayData = clusterMutation.data || cachedData;
 
   return (
     <div className="min-h-screen pt-20 pb-12 px-4">
@@ -185,9 +206,9 @@ export const Cluster = () => {
           <div className="flex justify-center py-12">
             <OmnitrixLoader />
           </div>
-        ) : clusterMutation.data ? (
+        ) : displayData ? (
           <div className="space-y-12">
-            {clusterMutation.data.map((cluster, clusterIndex) => (
+            {displayData.map((cluster, clusterIndex) => (
               <motion.div
                 key={cluster.cluster}
                 initial={{ opacity: 0, y: 20 }}
