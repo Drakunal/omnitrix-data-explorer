@@ -116,12 +116,22 @@ export const useAlien = (id: string) => {
 };
 
 // API response types for similarity
+interface SimilarityApiStats {
+  strength: number;
+  speed: number;
+  intelligence: number;
+  durability: number;
+  power: number;
+  combat: number;
+}
+
 interface SimilarityApiItem {
   id: string;
   display_name: string;
   original_name: string;
   image_url: string;
   score: number;
+  stats: SimilarityApiStats;
 }
 
 interface SimilarityApiResponse {
@@ -131,18 +141,18 @@ interface SimilarityApiResponse {
   opposite: SimilarityApiItem;
 }
 
-// Transform API item to our Alien type (partial, will be fetched on click)
+// Transform API item to our Alien type
 const mapApiItemToAlien = (item: SimilarityApiItem): Alien => ({
   id: item.id,
   name: item.display_name,
   image: item.image_url || "",
   species: item.original_name,
-  strength: 0,
-  speed: 0,
-  intelligence: 0,
-  durability: 0,
-  power: 0,
-  combat: 0,
+  strength: item.stats.strength,
+  speed: item.stats.speed,
+  intelligence: item.stats.intelligence,
+  durability: item.stats.durability,
+  power: item.stats.power,
+  combat: item.stats.combat,
 });
 
 export interface SimilarityData {
