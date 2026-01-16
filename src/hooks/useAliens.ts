@@ -230,32 +230,92 @@ interface ClusterParams {
   features: string[];
 }
 
+// API response types for clustering
+interface ClusterApiStats {
+  strength: number;
+  speed: number;
+  intelligence: number;
+  durability: number;
+  power: number;
+  combat: number;
+}
+
+interface ClusterApiAlien {
+  id: string;
+  display_name: string;
+  original_name: string;
+  image_url: string;
+  stats: ClusterApiStats;
+}
+
+interface ClusterApiItem {
+  cluster_id: number;
+  size: number;
+  aliens: ClusterApiAlien[];
+}
+
+interface ClusterApiResponse {
+  algorithm: string;
+  k: number;
+  features: string[];
+  clusters: ClusterApiItem[];
+}
+
+// Transform cluster API alien to our Alien type
+const mapClusterAlienToAlien = (alien: ClusterApiAlien): Alien => ({
+  id: alien.id,
+  name: alien.display_name,
+  image: alien.image_url || "",
+  species: alien.original_name,
+  strength: alien.stats.strength,
+  speed: alien.stats.speed,
+  intelligence: alien.stats.intelligence,
+  durability: alien.stats.durability,
+  power: alien.stats.power,
+  combat: alien.stats.combat,
+});
+
 export const useCluster = () => {
   return useMutation({
-    mutationFn: (params: ClusterParams) =>
-      fetchWithFallback<ClusterResult[]>(
-        `${API_BASE}/cluster`,
-        {
-          method: "POST",
-          body: JSON.stringify(params),
-        },
-        () => {
-          // Mock clustering
-          const { k } = params;
-          const clusters: ClusterResult[] = [];
-          
-          for (let i = 0; i < k; i++) {
-            clusters.push({ cluster: i, aliens: [] });
-          }
-          
-          mockAliens.forEach((alien, index) => {
-            const clusterIndex = index % k;
-            clusters[clusterIndex].aliens.push(alien);
-          });
-          
-          return clusters;
+    mutationFn: async (params: ClusterParams): Promise<ClusterResult[]> => {
+      const featuresParam = params.features.join(",");
+      const url = `${API_BASE}/cluster/?algorithm=${params.algorithm}&k=${params.k}&features=${encodeURIComponent(featuresParam)}`;
+      
+      try {
+        const response = await fetch(url, {
+          headers: { "Accept": "application/json" },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status}`);
         }
-      ),
+        
+        const data: ClusterApiResponse = await response.json();
+        
+        // Transform API response to our ClusterResult format
+        return data.clusters.map((cluster) => ({
+          cluster: cluster.cluster_id,
+          aliens: cluster.aliens.map(mapClusterAlienToAlien),
+        }));
+      } catch (error) {
+        console.warn(`⚠️ [API] Cluster fetch failed, using mock`, error);
+        
+        // Mock clustering fallback
+        const { k } = params;
+        const clusters: ClusterResult[] = [];
+        
+        for (let i = 0; i < k; i++) {
+          clusters.push({ cluster: i, aliens: [] });
+        }
+        
+        mockAliens.forEach((alien, index) => {
+          const clusterIndex = index % k;
+          clusters[clusterIndex].aliens.push(alien);
+        });
+        
+        return clusters;
+      }
+    },
   });
 };
 
