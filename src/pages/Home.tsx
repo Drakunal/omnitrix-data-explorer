@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { OmnitrixLoader } from "@/components/OmnitrixLoader";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Database, Brain, Layers } from "lucide-react";
+import { ChevronRight, Dna, Radar, Orbit } from "lucide-react";
 import omnitrixSymbol from "@/assets/omnitrix-symbol.png";
 import omnitrixInit from "@/assets/audio/omnitrix-init.mp3";
 
@@ -33,17 +33,17 @@ export const Home = () => {
 
   const features = [
     {
-      icon: Database,
+      icon: Dna,
       title: "Alien Database",
       description: "Explore detailed profiles of every alien in the Omnitrix",
     },
     {
-      icon: Brain,
+      icon: Radar,
       title: "Similarity Analysis",
       description: "Discover aliens with similar or opposite capabilities",
     },
     {
-      icon: Layers,
+      icon: Orbit,
       title: "Clustering Lab",
       description: "Group aliens by their shared characteristics",
     },
