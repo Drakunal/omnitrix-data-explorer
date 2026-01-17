@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useCluster } from "@/hooks/useAliens";
 import { AlienCard } from "@/components/AlienCard";
 import { OmnitrixLoader } from "@/components/OmnitrixLoader";
@@ -13,10 +13,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Layers } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { Layers, ChevronDown, ChevronRight } from "lucide-react";
 import type { ClusterResult } from "@/types/alien";
 
 const CACHE_KEY = "cluster_cache";
+const INITIAL_DISPLAY_COUNT = 4;
 
 const availableFeatures = [
   { id: "strength", label: "Strength" },
@@ -26,6 +32,84 @@ const availableFeatures = [
   { id: "power", label: "Power" },
   { id: "combat", label: "Combat" },
 ];
+
+interface ClusterSectionProps {
+  cluster: ClusterResult;
+  clusterIndex: number;
+}
+
+const ClusterSection = ({ cluster, clusterIndex }: ClusterSectionProps) => {
+  const [isOpen, setIsOpen] = useState(true);
+  const [showAll, setShowAll] = useState(false);
+
+  const displayedAliens = showAll 
+    ? cluster.aliens 
+    : cluster.aliens.slice(0, INITIAL_DISPLAY_COUNT);
+  const hasMore = cluster.aliens.length > INITIAL_DISPLAY_COUNT;
+
+  return (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+      <CollapsibleTrigger asChild>
+        <button className="w-full flex items-center justify-between p-4 holo-card hover:bg-primary/5 transition-colors cursor-pointer">
+          <div className="flex items-center gap-3">
+            <div
+              className={`w-4 h-4 rounded-full`}
+              style={{
+                backgroundColor: `hsl(var(--cluster-${clusterIndex + 1}))`,
+                boxShadow: `0 0 10px hsl(var(--cluster-${clusterIndex + 1}) / 0.5)`,
+              }}
+            />
+            <h2 className="font-orbitron text-xl">
+              Cluster {cluster.cluster + 1}
+            </h2>
+            <span className="text-muted-foreground text-sm font-normal">
+              ({cluster.aliens.length} aliens)
+            </span>
+          </div>
+          {isOpen ? (
+            <ChevronDown className="w-5 h-5 text-primary" />
+          ) : (
+            <ChevronRight className="w-5 h-5 text-muted-foreground" />
+          )}
+        </button>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="p-4 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <AnimatePresence mode="popLayout">
+              {displayedAliens.map((alien, alienIndex) => (
+                <motion.div
+                  key={alien.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ delay: alienIndex * 0.05 }}
+                >
+                  <AlienCard alien={alien} clusterIndex={clusterIndex} />
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+          
+          {hasMore && (
+            <div className="mt-6 flex justify-center">
+              <Button
+                variant="outline"
+                onClick={() => setShowAll(!showAll)}
+                className="font-orbitron text-sm border-primary/30 hover:border-primary"
+              >
+                {showAll 
+                  ? `Show Less` 
+                  : `See More (${cluster.aliens.length - INITIAL_DISPLAY_COUNT} more)`
+                }
+              </Button>
+            </div>
+          )}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+};
 
 export const Cluster = () => {
   const [algorithm, setAlgorithm] = useState<"kmeans" | "hierarchical">("kmeans");
@@ -207,7 +291,7 @@ export const Cluster = () => {
             <OmnitrixLoader />
           </div>
         ) : displayData ? (
-          <div className="space-y-12">
+          <div className="space-y-4">
             {displayData.map((cluster, clusterIndex) => (
               <motion.div
                 key={cluster.cluster}
@@ -215,32 +299,7 @@ export const Cluster = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: clusterIndex * 0.1 }}
               >
-                <h2 className="font-orbitron text-xl mb-6 flex items-center gap-3">
-                  <div
-                    className={`w-4 h-4 rounded-full cluster-${clusterIndex}`}
-                    style={{
-                      backgroundColor: `hsl(var(--cluster-${clusterIndex + 1}))`,
-                      boxShadow: `0 0 10px hsl(var(--cluster-${clusterIndex + 1}) / 0.5)`,
-                    }}
-                  />
-                  Cluster {cluster.cluster + 1}
-                  <span className="text-muted-foreground text-sm font-normal">
-                    ({cluster.aliens.length} aliens)
-                  </span>
-                </h2>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {cluster.aliens.map((alien, alienIndex) => (
-                    <motion.div
-                      key={alien.id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: clusterIndex * 0.1 + alienIndex * 0.05 }}
-                    >
-                      <AlienCard alien={alien} clusterIndex={clusterIndex} />
-                    </motion.div>
-                  ))}
-                </div>
+                <ClusterSection cluster={cluster} clusterIndex={clusterIndex} />
               </motion.div>
             ))}
           </div>
