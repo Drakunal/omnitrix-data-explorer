@@ -75,7 +75,7 @@ const ClusterSection = ({ cluster, clusterIndex }: ClusterSectionProps) => {
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="p-4 pt-2">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             <AnimatePresence mode="popLayout">
               {displayedAliens.map((alien, alienIndex) => (
                 <motion.div
@@ -84,6 +84,7 @@ const ClusterSection = ({ cluster, clusterIndex }: ClusterSectionProps) => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ delay: alienIndex * 0.05 }}
+                  className="max-w-sm mx-auto w-full sm:max-w-none"
                 >
                   <AlienCard alien={alien} clusterIndex={clusterIndex} />
                 </motion.div>

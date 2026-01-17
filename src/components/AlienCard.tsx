@@ -56,18 +56,18 @@ export const AlienCard = ({ alien, onClick, clusterIndex, similarity }: AlienCar
       </div>
       
       {/* Info section */}
-      <div className="p-4">
-        <h3 className="font-orbitron font-bold text-lg text-foreground group-hover:text-primary transition-colors tracking-wider">
+      <div className="p-3 sm:p-4">
+        <h3 className="font-orbitron font-bold text-base sm:text-lg text-foreground group-hover:text-primary transition-colors tracking-wider truncate">
           {alien.name}
         </h3>
         {alien.species && (
-          <p className="text-muted-foreground text-sm mt-1 font-mono">
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1 font-mono truncate">
             {alien.species}
           </p>
         )}
         
         {/* Mini stats */}
-        <div className="mt-3 grid grid-cols-4 gap-1">
+        <div className="mt-2 sm:mt-3 grid grid-cols-4 gap-1">
           {[
             { label: "STR", value: alien.strength },
             { label: "SPD", value: alien.speed },
@@ -75,7 +75,7 @@ export const AlienCard = ({ alien, onClick, clusterIndex, similarity }: AlienCar
             { label: "DUR", value: alien.durability },
           ].map(({ label, value }) => (
             <div key={label} className="text-center">
-              <div className="text-[10px] text-muted-foreground">{label}</div>
+              <div className="text-[9px] sm:text-[10px] text-muted-foreground">{label}</div>
               <div className="h-1 bg-muted rounded-full overflow-hidden mt-1">
                 <motion.div
                   className="h-full bg-primary"

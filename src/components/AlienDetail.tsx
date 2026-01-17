@@ -29,27 +29,27 @@ export const AlienDetail = ({ alien, onClose }: AlienDetailProps) => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
-        className="relative w-full max-w-3xl max-h-[90vh] bg-card border border-primary/30 rounded-xl overflow-auto shadow-glow"
+        className="relative w-full max-w-3xl max-h-[90vh] bg-card border border-primary/30 rounded-xl overflow-auto shadow-glow mx-2 sm:mx-4"
       >
         {/* Header */}
-        <div className="sticky top-0 bg-card/95 backdrop-blur-sm border-b border-primary/20 p-4 flex items-center justify-between">
-          <h2 className="font-orbitron font-bold text-xl text-primary">
+        <div className="sticky top-0 bg-card/95 backdrop-blur-sm border-b border-primary/20 p-3 sm:p-4 flex items-center justify-between">
+          <h2 className="font-orbitron font-bold text-lg sm:text-xl text-primary truncate pr-2">
             {alien.name}
           </h2>
           <Button
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground shrink-0"
           >
             <X className="w-5 h-5" />
           </Button>
         </div>
 
         {/* Content */}
-        <div className="p-6 grid md:grid-cols-2 gap-6">
+        <div className="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           {/* Image */}
-          <div className="relative">
+          <div className="relative max-w-xs mx-auto md:max-w-none w-full">
             <div className="aspect-square rounded-lg overflow-hidden border border-primary/30">
               <img
                 src={alien.image}
@@ -60,19 +60,19 @@ export const AlienDetail = ({ alien, onClose }: AlienDetailProps) => {
             </div>
             
             {/* Corner accents */}
-            <div className="absolute top-2 left-2 w-6 h-6 border-l-2 border-t-2 border-primary" />
-            <div className="absolute top-2 right-2 w-6 h-6 border-r-2 border-t-2 border-primary" />
-            <div className="absolute bottom-2 left-2 w-6 h-6 border-l-2 border-b-2 border-primary" />
-            <div className="absolute bottom-2 right-2 w-6 h-6 border-r-2 border-b-2 border-primary" />
+            <div className="absolute top-2 left-2 w-4 sm:w-6 h-4 sm:h-6 border-l-2 border-t-2 border-primary" />
+            <div className="absolute top-2 right-2 w-4 sm:w-6 h-4 sm:h-6 border-r-2 border-t-2 border-primary" />
+            <div className="absolute bottom-2 left-2 w-4 sm:w-6 h-4 sm:h-6 border-l-2 border-b-2 border-primary" />
+            <div className="absolute bottom-2 right-2 w-4 sm:w-6 h-4 sm:h-6 border-r-2 border-b-2 border-primary" />
 
             {/* Species tag */}
             {alien.species && (
-              <div className="absolute bottom-4 left-4 right-4">
-                <div className="bg-card/90 backdrop-blur-sm border border-primary/30 rounded-lg p-3">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">
+              <div className="absolute bottom-3 sm:bottom-4 left-3 sm:left-4 right-3 sm:right-4">
+                <div className="bg-card/90 backdrop-blur-sm border border-primary/30 rounded-lg p-2 sm:p-3">
+                  <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">
                     Species
                   </p>
-                  <p className="font-orbitron text-foreground">
+                  <p className="font-orbitron text-sm sm:text-base text-foreground">
                     {alien.species}
                   </p>
                 </div>
@@ -117,13 +117,14 @@ export const AlienDetail = ({ alien, onClose }: AlienDetailProps) => {
         </div>
 
         {/* Actions */}
-        <div className="p-6 border-t border-primary/20 flex flex-wrap gap-4">
+        <div className="p-4 sm:p-6 border-t border-primary/20 flex flex-col sm:flex-row gap-3 sm:gap-4">
           <Button
             variant="omnitrix"
             onClick={() => {
               onClose();
               navigate(`/similarity?alienId=${alien.id}`);
             }}
+            className="w-full sm:w-auto text-sm"
           >
             <Search className="w-4 h-4 mr-2" />
             Find Similar Aliens
@@ -134,6 +135,7 @@ export const AlienDetail = ({ alien, onClose }: AlienDetailProps) => {
               onClose();
               navigate(`/similarity?alienId=${alien.id}&opposite=true`);
             }}
+            className="w-full sm:w-auto text-sm"
           >
             <Shuffle className="w-4 h-4 mr-2" />
             Find Opposite Alien

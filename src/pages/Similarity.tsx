@@ -67,13 +67,13 @@ export const Similarity = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="holo-card p-6 mb-8"
+          className="holo-card p-4 sm:p-6 mb-6 sm:mb-8"
         >
-          <div className="grid sm:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="space-y-2">
-              <Label className="font-orbitron text-sm">SELECT ALIEN</Label>
+              <Label className="font-orbitron text-xs sm:text-sm">SELECT ALIEN</Label>
               <Select value={selectedAlienId} onValueChange={setSelectedAlienId}>
-                <SelectTrigger className="bg-muted border-primary/30 font-orbitron">
+                <SelectTrigger className="bg-muted border-primary/30 font-orbitron text-sm">
                   <SelectValue placeholder="Choose an alien..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -87,9 +87,9 @@ export const Similarity = () => {
             </div>
 
             <div className="space-y-2">
-              <Label className="font-orbitron text-sm">SIMILARITY METRIC</Label>
+              <Label className="font-orbitron text-xs sm:text-sm">SIMILARITY METRIC</Label>
               <Select value={metric} onValueChange={setMetric}>
-                <SelectTrigger className="bg-muted border-primary/30 font-orbitron">
+                <SelectTrigger className="bg-muted border-primary/30 font-orbitron text-sm">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -133,16 +133,17 @@ export const Similarity = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <h2 className="font-orbitron text-lg text-primary mb-6 text-center">
+                  <h2 className="font-orbitron text-base sm:text-lg text-primary mb-4 sm:mb-6 text-center">
                     TOP 3 SIMILAR ALIENS
                   </h2>
-                  <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
                     {topSimilar.map((result, index) => (
                       <motion.div
                         key={result.alien.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 + index * 0.1 }}
+                        className="max-w-xs mx-auto w-full sm:max-w-none"
                       >
                         <AlienCard
                           alien={result.alien}
