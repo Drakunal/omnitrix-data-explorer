@@ -85,12 +85,12 @@ export const Gallery = () => {
           )}
         </motion.div>
 
-        {/* Grid */}
+        {/* Grid - single column on mobile with max-width for cards */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
         >
           {visibleAliens.map((alien, index) => (
             <motion.div
@@ -98,6 +98,7 @@ export const Gallery = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: (index % BATCH_SIZE) * 0.05 }}
+              className="max-w-sm mx-auto w-full sm:max-w-none"
             >
               <AlienCard
                 alien={alien}

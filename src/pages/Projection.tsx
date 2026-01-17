@@ -195,11 +195,11 @@ export const Projection = () => {
               <OmnitrixLoader />
             </div>
           ) : displayData ? (
-            <div className="flex justify-center">
+            <div className="flex justify-center overflow-x-auto">
               <ScatterPlot
                 points={displayData}
-                width={Math.min(700, typeof window !== 'undefined' ? window.innerWidth - 80 : 700)}
-                height={450}
+                width={Math.min(700, typeof window !== 'undefined' ? window.innerWidth - 48 : 700)}
+                height={Math.min(450, typeof window !== 'undefined' ? window.innerWidth - 48 : 450)}
               />
             </div>
           ) : (
