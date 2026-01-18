@@ -1,73 +1,132 @@
-# Welcome to your Lovable project
+# 👽 Omnitrix Lab
 
-## Project info
+**Omnitrix Lab** is a data-driven exploration project inspired by *Ben 10*.  
+It treats each alien as a data point and applies similarity analysis, distance metrics, and machine-learning concepts to explore alien abilities in a fun, interactive way.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+This repository contains the **frontend application** of Omnitrix Lab.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## ✨ Features
 
-**Use Lovable**
+- Browse all Ben 10 aliens with stats and visuals  
+- Similarity analysis:
+  - Top similar aliens
+  - Most opposite alien  
+- Multiple distance metrics:
+  - Cosine
+  - Euclidean
+  - Manhattan  
+- Interactive charts and visual stats  
+- Clean, responsive UI  
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠 Tech Stack
 
-**Use your preferred IDE**
+- React  
+- Vite  
+- TypeScript  
+- Tailwind CSS  
+- REST API integration  
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🚀 Getting Started
 
-Follow these steps:
+### 1️⃣ Install dependencies
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```bash
+npm install
+````
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 2️⃣ Environment configuration
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Create a `.env` file in the project root:
+
+```env
+VITE_API_BASE=<BACKEND_BASE_URL>
+```
+
+Example for local backend:
+
+```env
+VITE_API_BASE=http://localhost:8000
+```
+
+Or use your deployed backend URL.
+
+> ⚠️ The variable **must** start with `VITE_` for Vite to expose it to the app.
+
+---
+
+### 3️⃣ Run the development server
+
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The app will be available at the URL shown in the terminal
+(usually `http://localhost:5173`).
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
+## 🔌 Backend Dependency
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+This frontend depends on the **Omnitrix Lab Backend**, which exposes APIs such as:
 
-## What technologies are used for this project?
+* `/aliens` – Alien dataset
+* `/similarity` – Similarity & opposite analysis
+* `/clustering` – Alien clustering
+* `/projection` – 2D projections for visualization
 
-This project is built with:
+Make sure the backend is running and the base URL is correctly set in `.env`.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 📁 Project Structure (Simplified)
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+```
+src/
+├── components/
+├── pages/
+├── services/        # API calls
+├── hooks/
+├── utils/
+└── main.tsx
+```
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+## 🧠 Concept
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+*What if the Omnitrix was real?*
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Omnitrix Lab explores that idea by combining:
+
+* Distance-based similarity
+* Machine learning concepts
+* Visual analytics
+
+All wrapped in a playful, Ben 10–inspired interface.
+
+---
+
+## 📌 Notes
+
+* Built for learning, experimentation, and fun
+* Inspired by the Ben 10 universe
+* No affiliation with Cartoon Network
+
+---
+
+## ⭐️ Future Ideas
+
+* UI-controlled clustering
+* Interactive projection plots
+* Alien comparison history
+* Performance optimizations
+
+```
