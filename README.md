@@ -129,4 +129,9 @@ All wrapped in a playful, Ben 10–inspired interface.
 * Alien comparison history
 * Performance optimizations
 
-```
+## Disclaimer
+
+This project is a fan-made, educational project inspired by the Ben 10 universe.
+All character names and concepts belong to their respective owners.
+This project is not affiliated with or endorsed by Cartoon Network.
+
